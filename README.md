@@ -52,8 +52,8 @@ This project consists of two separate applications:
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/your-repo/project.git
-    cd project
+    git clone https://github.com/KrishnaSaiChaitanya/Zeotap_Assignment.git
+    cd Zeotap_Assignment
     ```
 
 2. Install dependencies:
