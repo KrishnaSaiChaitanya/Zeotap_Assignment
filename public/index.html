@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mx-auto my-10">
+        <div class="border-b border-gray-200">
+            <ul class="flex">
+                <li class="mr-2">
+                    <a class="inline-block py-2 px-4 text-blue-500 font-semibold" href="#ruleEngine"
+                        onclick="loadComponent('ruleEngine')">Rule Engine</a>
+                </li>
+                <li class="mr-2">
+                    <a class="inline-block py-2 px-4 text-gray-500 hover:text-blue-500" href="#weatherMonitoring"
+                        onclick="loadComponent('weatherMonitoring')">Weather Monitoring</a>
+                </li>
+            </ul>
+        </div>
+        <div id="componentContainer" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <!-- Dynamic component content will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        function loadComponent(component) {
+            fetch(`${component}.html`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('componentContainer').innerHTML = data;
+                    updateTabStyles(component);
+                })
+                .catch(error => {
+                    console.error('Error loading component:', error);
+                });
+        }
+
+        function updateTabStyles(selectedComponent) {
+            document.querySelectorAll('.flex a').forEach(tabLink => {
+                if (tabLink.getAttribute('href') === `#${selectedComponent}`) {
+                    tabLink.classList.add('text-blue-500', 'font-semibold');
+                    tabLink.classList.remove('text-gray-500');
+                } else {
+                    tabLink.classList.remove('text-blue-500', 'font-semibold');
+                    tabLink.classList.add('text-gray-500');
+                }
+            });
+        }
+        async function createRule() {
+            const ruleString = document.getElementById('ruleInput').value;
+            const response = await fetch('/api/rules/create_rule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ruleString })
+            });
+            const result = await response.json();
+            document.getElementById('astOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+
+        async function combineRules() {
+            const ruleStrings = [document.getElementById('ruleInput').value];
+            const response = await fetch('/api/rules/combine_rules', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ruleStrings })
+            });
+            const result = await response.json();
+            document.getElementById('astOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+
+        async function evaluateRule() {
+            const data = JSON.parse(document.getElementById('dataInput').value);
+            const ast = JSON.parse(document.getElementById('astOutput').innerText);
+            const response = await fetch('/api/rules/evaluate_rule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ast, data })
+            });
+            const result = await response.json();
+            document.getElementById('evaluationOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+        async function fetchWeatherSummary() {
+            const response = await fetch('/api/weather/weather_summary');
+            const result = await response.json();
+            document.getElementById('weatherSummaryOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+        async function updateAlert() {
+            const temperatureThreshold = document.getElementById('temperatureThreshold').value;
+            const conditionThreshold = document.getElementById('conditionThreshold').value;
+            const response = await fetch('/api/weather/update_alert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ temperatureThreshold, conditionThreshold })
+            });
+            const result = await response.json();
+            document.getElementById('alertsOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+
+        async function fetchAlerts() {
+            const response = await fetch('/api/alerts/alerts');
+            const result = await response.json();
+            document.getElementById('alertsOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+        function loadChart() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    datasets: [{
+                        label: 'Temperature (°C)',
+                        data: [22, 21, 20, 19, 23, 24, 25],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        // Load the default component
+        loadComponent('ruleEngine');
+    </script>
+</body>
+
+</html>
