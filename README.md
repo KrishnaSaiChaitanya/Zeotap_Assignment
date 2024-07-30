@@ -21,6 +21,7 @@ This project consists of two separate applications:
 - `POST /create_rule`: Creates a rule from a string representation and stores it as an AST.
 - `POST /combine_rules`: Combines multiple rules into a single AST.
 - `POST /evaluate_rule`: Evaluates a combined rule against provided user data.
+- `GET /latest_ast`: Retrieve latest ast from database for evaluation
 
 **Example Rules:**
 - rule1: `"((age > 30 AND department = 'Sales') OR (age < 25 AND department = 'Marketing')) AND (salary > 50000 OR experience > 5)"`

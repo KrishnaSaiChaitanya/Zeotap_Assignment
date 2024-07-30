@@ -13,10 +13,13 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-mongoose.connect("mongodb://localhost:27017/rule_engine", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://chaitanya:chaitanya2105@chaitanya.rshhe5n.mongodb.net/zeotap",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 app.use("/api/rules", ruleRoutes);
 app.use("/api/weather", weatherRoutes);
