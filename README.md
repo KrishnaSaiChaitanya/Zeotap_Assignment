@@ -31,11 +31,11 @@ This project consists of two separate applications:
 
 
 **Key Features:**
-- Retrieve weather data from OpenWeatherMap API at configurable intervals.
-- Convert temperature values from Kelvin to Celsius.
-- Store daily weather summaries in a MongoDB database.
-- Define user-configurable thresholds for alerting.
-- Implement visualizations to display daily summaries and alerts.
+- Retrieve weather data from OpenWeatherMap API at configurable intervals. ---> corn
+- Convert temperature values from Kelvin to Celsius. ---> function
+- Store daily weather summaries in a MongoDB database. ---> schema why do i store like that
+- Define user-configurable thresholds for alerting. ---> increase the configurable parameters
+- Implement visualizations to display daily summaries and alerts. ---> graph and logs
 
 **Endpoints:**
 - `GET /weather`: Fetches real-time weather data and processes it.

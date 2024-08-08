@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main UI</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 
@@ -29,17 +31,35 @@
                 <div class=" px-8 pt-6 pb-8 mb-4">
                     <div class="mb-4 w-full max-w-lg mx-auto">
                         <h2 class="text-xl font-semibold mb-2">Create Rule</h2>
-                        <input id="ruleInput" type="text" class="border p-2 w-full rounded-md"
-                            placeholder="Enter rule string">
+                        <textarea id="ruleInput" class="border p-2 w-full rounded-md"
+                            placeholder="Enter rule string"></textarea>
+
                         <button onclick="createRule()" class="mt-2 p-2 bg-blue-500 text-white w-full rounded-md">Create
                             Rule</button>
                     </div>
 
                     <div class="mb-4 w-full max-w-lg mx-auto">
                         <h2 class="text-xl font-semibold mb-2">Combine Rules</h2>
-                        <button onclick="combineRules()" class="p-2 bg-green-500 text-white w-full rounded-md">Combine
+                        <button onclick="openModal()" class="p-2 bg-green-500 text-white w-full rounded-md">Combine
                             Rules</button>
                     </div>
+
+
+
+
+                    <div id="ruleModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+
+                        <div class="fixed inset-0 bg-black opacity-50"></div>
+
+                        <div class="relative bg-white p-6 rounded-lg shadow-lg z-10">
+                            <h2 class="text-xl font-bold mb-4">Select Rules to Combine</h2>
+                            <div id="rulesList" class="mb-4 p-3 overflow-y-scroll" style="height: 300px;"></div>
+                            <button onclick="combineSelectedRules()"
+                                class="bg-green-500 text-white px-4 py-2">Combine</button>
+                            <button onclick="closeModal()" class="bg-red-500 text-white px-4 py-2">Cancel</button>
+                        </div>
+                    </div>
+
 
                     <div class="mb-4 w-full max-w-lg mx-auto">
                         <h2 class="text-xl font-semibold mb-2">Evaluate Rule</h2>
@@ -59,115 +79,145 @@
                 <div class="">
                     <p class="mb-3 text-xl font-semibold text-center">AST Tree</p>
                     <div id="astOutput"
-                        class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 mb-6 mx-auto y-overflow-scroll w-[300px]"
-                        style="height: 330px; width: 400px;">
+                        class="max-w-45 bg-white shadow-lg rounded-lg  mb-6 mx-auto y-overflow-scroll w-[400px]"
+                        style="height: 430px; width: 800px;">
                     </div>
                 </div>
             </div>
 
         </div>
-        <div class="container mx-auto my-10" id="weatherMonitoring">
-            <div class="flex flex-col justify-center items-center mb-4">
-                <div id="info-message" class="flex justify-center items-center"><svg xmlns="http://www.w3.org/2000/svg"
-                        x="0px" y="0px" width="30" height="30" viewBox="0 0 50 50">
-                        <path
-                            d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 22 14 A 3 3 0 0 0 25 17 A 3 3 0 0 0 28 14 A 3 3 0 0 0 25 11 z M 21 21 L 21 23 L 22 23 L 23 23 L 23 36 L 22 36 L 21 36 L 21 38 L 22 38 L 23 38 L 27 38 L 28 38 L 29 38 L 29 36 L 28 36 L 27 36 L 27 21 L 26 21 L 22 21 L 21 21 z">
-                        </path>
-                    </svg>
-                    <p class="ml-3"> Please Wait for 5 mins and reload the page to see Today Updates</p>
+        <div class="container mx-auto " id="weatherMonitoring">
+            <div class="flex justify-center items-center">
+                <div class=" flex flex-col justify-center items-center mb-4">
+                    <div id="info-message" class="flex justify-center items-center"><svg
+                            xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30"
+                            viewBox="0 0 50 50">
+                            <path
+                                d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 22 14 A 3 3 0 0 0 25 17 A 3 3 0 0 0 28 14 A 3 3 0 0 0 25 11 z M 21 21 L 21 23 L 22 23 L 23 23 L 23 36 L 22 36 L 21 36 L 21 38 L 22 38 L 23 38 L 27 38 L 28 38 L 29 38 L 29 36 L 28 36 L 27 36 L 27 21 L 26 21 L 22 21 L 21 21 z">
+                            </path>
+                        </svg>
+                        <p class="ml-3"> Please Wait for 5 mins and reload the page to see Today Updates</p>
+                    </div>
+
+                    <div class="m-10 items-center flex flex-col md:flex-row md:justify-center">
+
+                        <div
+                            class="w-64 transition duration-500 ease-in-out transform bg-white rounded-lg hover:scale-105 cursor-pointer border flex flex-col justify-center items-center text-center p-6">
+                            <div class="text-md font-bold flex flex-col text-gray-900"><span
+                                    class="uppercase">Benglore</span>
+                                <span id="weather-date" class="font-normal text-gray-700 text-sm">October 22</span>
+                            </div>
+                            <div class="w-32 h-32 flex items-center justify-center">
+                                <svg width="95" height="72" viewBox="0 0 95 72" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0)">
+                                        <path
+                                            d="M56.2837 47.6226C67.476 47.6226 76.5492 40.7461 76.5492 32.2635C76.5492 23.7809 67.476 16.9044 56.2837 16.9044C45.0914 16.9044 36.0182 23.7809 36.0182 32.2635C36.0182 40.7461 45.0914 47.6226 56.2837 47.6226Z"
+                                            fill="#F8C442" />
+                                        <path
+                                            d="M76.5503 32.2632C76.5503 40.7466 67.4778 47.6226 56.2845 47.6226C55.1445 47.6226 54.0263 47.5513 52.937 47.4128C62.538 46.2046 69.8554 39.8826 69.8554 32.2632C69.8554 24.6439 62.538 18.3219 52.937 17.1137C54.0263 16.9752 55.1445 16.9039 56.2845 16.9039C67.4778 16.9039 76.5503 23.78 76.5503 32.2632Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M44.5033 37.8822C45.3831 37.8822 46.0962 37.3417 46.0962 36.6749C46.0962 36.0082 45.3831 35.4677 44.5033 35.4677C43.6236 35.4677 42.9104 36.0082 42.9104 36.6749C42.9104 37.3417 43.6236 37.8822 44.5033 37.8822Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M48.9565 41.2572C49.8362 41.2572 50.5494 40.7167 50.5494 40.0499C50.5494 39.3832 49.8362 38.8427 48.9565 38.8427C48.0767 38.8427 47.3635 39.3832 47.3635 40.0499C47.3635 40.7167 48.0767 41.2572 48.9565 41.2572Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M62.3752 25.0909C63.255 25.0909 63.9682 24.5504 63.9682 23.8837C63.9682 23.2169 63.255 22.6764 62.3752 22.6764C61.4955 22.6764 60.7823 23.2169 60.7823 23.8837C60.7823 24.5504 61.4955 25.0909 62.3752 25.0909Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M56.6435 11.5939C55.8748 11.5939 55.2519 11.1218 55.2519 10.5392V3.35363C55.2519 2.77102 55.8748 2.29894 56.6435 2.29894C57.4122 2.29894 58.0351 2.77102 58.0351 3.35363V10.5392C58.0351 11.1218 57.4122 11.5939 56.6435 11.5939Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M42.903 14.3847C42.422 14.3847 41.9543 14.1956 41.6966 13.8572L36.9562 7.6344C36.5719 7.12998 36.8 6.48493 37.4655 6.19369C38.1309 5.90274 38.9824 6.07515 39.3664 6.57971L44.1068 12.8025C44.4911 13.3069 44.263 13.952 43.5975 14.2432C43.3783 14.339 43.139 14.3847 42.903 14.3847Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M32.8406 22.0088C32.6045 22.0088 32.3652 21.9633 32.1461 21.8674L23.9354 18.2748C23.2698 17.9836 23.0418 17.3385 23.4261 16.8341C23.8102 16.3296 24.6611 16.157 25.327 16.4481L33.5377 20.0408C34.2032 20.332 34.4313 20.9771 34.047 21.4815C33.7893 21.8198 33.3215 22.0088 32.8406 22.0088Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M88.6548 46.4316C88.4188 46.4316 88.1793 46.3861 87.9603 46.2902L79.7497 42.6973C79.0841 42.4061 78.8561 41.7611 79.2404 41.2566C79.6244 40.7519 80.4759 40.5795 81.1413 40.8706L89.3519 44.4635C90.0175 44.7547 90.2455 45.3997 89.8613 45.9042C89.6035 46.2426 89.1358 46.4316 88.6548 46.4316Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M29.1597 32.4238H19.679C18.9102 32.4238 18.2874 31.9518 18.2874 31.3691C18.2874 30.7865 18.9102 30.3145 19.679 30.3145H29.1599C29.9286 30.3145 30.5515 30.7865 30.5515 31.3691C30.5515 31.9518 29.9284 32.4238 29.1597 32.4238Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M93.6084 32.4238H84.1275C83.3588 32.4238 82.7359 31.9518 82.7359 31.3691C82.7359 30.7865 83.3588 30.3145 84.1275 30.3145H93.6084C94.3771 30.3145 95 30.7865 95 31.3691C95 31.9518 94.3771 32.4238 93.6084 32.4238Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M80.4466 22.0088C79.9657 22.0088 79.4979 21.8197 79.2402 21.4814C78.8559 20.9769 79.084 20.3319 79.7495 20.0406L87.9602 16.448C88.6255 16.157 89.477 16.3294 89.8611 16.834C90.2453 17.3384 90.0173 17.9834 89.3518 18.2747L81.1411 21.8674C80.9222 21.9633 80.6828 22.0088 80.4466 22.0088Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M70.3844 14.3847C70.1484 14.3847 69.909 14.3391 69.6899 14.2432C69.0243 13.952 68.7963 13.3069 69.1806 12.8025L73.9209 6.57972C74.305 6.07516 75.1559 5.90261 75.8218 6.1937C76.4874 6.48494 76.7154 7.12999 76.3312 7.63441L71.5908 13.8572C71.3331 14.1956 70.8653 14.3847 70.3844 14.3847Z"
+                                            fill="#F4A240" />
+                                        <path
+                                            d="M72.4467 46.6399C69.3986 46.5948 66.5502 47.2297 64.1466 48.3572C63.6846 48.5739 63.0801 48.3752 62.9877 47.9694C60.9998 39.2347 50.9559 32.59 38.8632 32.59C27.5872 32.59 18.0929 38.3681 15.2501 46.2303C15.1635 46.4699 14.8798 46.6385 14.5523 46.6492C6.4062 46.914 -0.0807194 52.0323 0.000735889 58.2858C0.0833044 64.6325 7.03001 69.7011 15.4047 69.7011H72.1424C80.6179 69.7011 87.4748 64.4491 87.3562 58.005C87.2423 51.819 80.6077 46.7609 72.4467 46.6399Z"
+                                            fill="#E2E2E2" />
+                                        <path
+                                            d="M87.3536 57.8798C87.4779 61.7158 85.1291 65.1414 81.4304 67.3042C81.8681 66.2293 82.103 65.0885 82.103 63.9049C82.103 57.5351 75.2906 52.3732 66.8876 52.3732C63.9477 52.3732 61.2031 53.005 58.8771 54.0991C58.4218 54.3133 57.8239 54.1039 57.7328 53.7037C55.7449 44.969 45.7003 38.3252 33.6078 38.3252C26.9387 38.3252 20.8919 40.3466 16.477 43.627C20.282 37.1255 28.8741 32.59 38.8632 32.59C50.9559 32.59 60.9992 39.2353 62.9883 47.9692C63.0807 48.3751 63.6852 48.5738 64.1472 48.3571C66.5491 47.2301 69.3962 46.5958 72.4428 46.6402C80.5422 46.7583 87.1549 51.7419 87.3536 57.8798Z"
+                                            fill="#CCCCCC" />
+                                        <path
+                                            d="M11.8294 61.6254C12.7091 61.6254 13.4223 61.0849 13.4223 60.4181C13.4223 59.7513 12.7091 59.2108 11.8294 59.2108C10.9496 59.2108 10.2365 59.7513 10.2365 60.4181C10.2365 61.0849 10.9496 61.6254 11.8294 61.6254Z"
+                                            fill="#CCCCCC" />
+                                        <path
+                                            d="M16.9996 65.1354C17.8794 65.1354 18.5926 64.5949 18.5926 63.9281C18.5926 63.2614 17.8794 62.7208 16.9996 62.7208C16.1199 62.7208 15.4067 63.2614 15.4067 63.9281C15.4067 64.5949 16.1199 65.1354 16.9996 65.1354Z"
+                                            fill="#CCCCCC" />
+                                        <path
+                                            d="M35.2983 42.9911C36.1781 42.9911 36.8912 42.4506 36.8912 41.7838C36.8912 41.1171 36.1781 40.5766 35.2983 40.5766C34.4186 40.5766 33.7054 41.1171 33.7054 41.7838C33.7054 42.4506 34.4186 42.9911 35.2983 42.9911Z"
+                                            fill="#CCCCCC" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0">
+                                            <rect width="95" height="72" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <p id="weather-main" class="text-gray-700 mb-2">Partly cloudy</p>
+                            <div id="weather-temp" class="text-3xl font-bold text-gray-900 mb-6">32º<span
+                                    class="font-normal text-gray-700 mx-1">/</span>20º</div>
+                            <p>Max temp: </p>
+                            <p>Min temp: </p>
+                        </div>
+                        <div id="chartContainer" class="hidden bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="m-10 items-center flex flex-col md:flex-row md:justify-center">
-                    <div
-                        class="w-64 transition duration-500 ease-in-out transform bg-white rounded-lg hover:scale-105 cursor-pointer border flex flex-col justify-center items-center text-center p-6">
-                        <div class="text-md font-bold flex flex-col text-gray-900"><span
-                                class="uppercase">Benglore</span>
-                            <span id="weather-date" class="font-normal text-gray-700 text-sm">October 22</span>
-                        </div>
-                        <div class="w-32 h-32 flex items-center justify-center">
-                            <svg width="95" height="72" viewBox="0 0 95 72" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <g clip-path="url(#clip0)">
-                                    <path
-                                        d="M56.2837 47.6226C67.476 47.6226 76.5492 40.7461 76.5492 32.2635C76.5492 23.7809 67.476 16.9044 56.2837 16.9044C45.0914 16.9044 36.0182 23.7809 36.0182 32.2635C36.0182 40.7461 45.0914 47.6226 56.2837 47.6226Z"
-                                        fill="#F8C442" />
-                                    <path
-                                        d="M76.5503 32.2632C76.5503 40.7466 67.4778 47.6226 56.2845 47.6226C55.1445 47.6226 54.0263 47.5513 52.937 47.4128C62.538 46.2046 69.8554 39.8826 69.8554 32.2632C69.8554 24.6439 62.538 18.3219 52.937 17.1137C54.0263 16.9752 55.1445 16.9039 56.2845 16.9039C67.4778 16.9039 76.5503 23.78 76.5503 32.2632Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M44.5033 37.8822C45.3831 37.8822 46.0962 37.3417 46.0962 36.6749C46.0962 36.0082 45.3831 35.4677 44.5033 35.4677C43.6236 35.4677 42.9104 36.0082 42.9104 36.6749C42.9104 37.3417 43.6236 37.8822 44.5033 37.8822Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M48.9565 41.2572C49.8362 41.2572 50.5494 40.7167 50.5494 40.0499C50.5494 39.3832 49.8362 38.8427 48.9565 38.8427C48.0767 38.8427 47.3635 39.3832 47.3635 40.0499C47.3635 40.7167 48.0767 41.2572 48.9565 41.2572Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M62.3752 25.0909C63.255 25.0909 63.9682 24.5504 63.9682 23.8837C63.9682 23.2169 63.255 22.6764 62.3752 22.6764C61.4955 22.6764 60.7823 23.2169 60.7823 23.8837C60.7823 24.5504 61.4955 25.0909 62.3752 25.0909Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M56.6435 11.5939C55.8748 11.5939 55.2519 11.1218 55.2519 10.5392V3.35363C55.2519 2.77102 55.8748 2.29894 56.6435 2.29894C57.4122 2.29894 58.0351 2.77102 58.0351 3.35363V10.5392C58.0351 11.1218 57.4122 11.5939 56.6435 11.5939Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M42.903 14.3847C42.422 14.3847 41.9543 14.1956 41.6966 13.8572L36.9562 7.6344C36.5719 7.12998 36.8 6.48493 37.4655 6.19369C38.1309 5.90274 38.9824 6.07515 39.3664 6.57971L44.1068 12.8025C44.4911 13.3069 44.263 13.952 43.5975 14.2432C43.3783 14.339 43.139 14.3847 42.903 14.3847Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M32.8406 22.0088C32.6045 22.0088 32.3652 21.9633 32.1461 21.8674L23.9354 18.2748C23.2698 17.9836 23.0418 17.3385 23.4261 16.8341C23.8102 16.3296 24.6611 16.157 25.327 16.4481L33.5377 20.0408C34.2032 20.332 34.4313 20.9771 34.047 21.4815C33.7893 21.8198 33.3215 22.0088 32.8406 22.0088Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M88.6548 46.4316C88.4188 46.4316 88.1793 46.3861 87.9603 46.2902L79.7497 42.6973C79.0841 42.4061 78.8561 41.7611 79.2404 41.2566C79.6244 40.7519 80.4759 40.5795 81.1413 40.8706L89.3519 44.4635C90.0175 44.7547 90.2455 45.3997 89.8613 45.9042C89.6035 46.2426 89.1358 46.4316 88.6548 46.4316Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M29.1597 32.4238H19.679C18.9102 32.4238 18.2874 31.9518 18.2874 31.3691C18.2874 30.7865 18.9102 30.3145 19.679 30.3145H29.1599C29.9286 30.3145 30.5515 30.7865 30.5515 31.3691C30.5515 31.9518 29.9284 32.4238 29.1597 32.4238Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M93.6084 32.4238H84.1275C83.3588 32.4238 82.7359 31.9518 82.7359 31.3691C82.7359 30.7865 83.3588 30.3145 84.1275 30.3145H93.6084C94.3771 30.3145 95 30.7865 95 31.3691C95 31.9518 94.3771 32.4238 93.6084 32.4238Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M80.4466 22.0088C79.9657 22.0088 79.4979 21.8197 79.2402 21.4814C78.8559 20.9769 79.084 20.3319 79.7495 20.0406L87.9602 16.448C88.6255 16.157 89.477 16.3294 89.8611 16.834C90.2453 17.3384 90.0173 17.9834 89.3518 18.2747L81.1411 21.8674C80.9222 21.9633 80.6828 22.0088 80.4466 22.0088Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M70.3844 14.3847C70.1484 14.3847 69.909 14.3391 69.6899 14.2432C69.0243 13.952 68.7963 13.3069 69.1806 12.8025L73.9209 6.57972C74.305 6.07516 75.1559 5.90261 75.8218 6.1937C76.4874 6.48494 76.7154 7.12999 76.3312 7.63441L71.5908 13.8572C71.3331 14.1956 70.8653 14.3847 70.3844 14.3847Z"
-                                        fill="#F4A240" />
-                                    <path
-                                        d="M72.4467 46.6399C69.3986 46.5948 66.5502 47.2297 64.1466 48.3572C63.6846 48.5739 63.0801 48.3752 62.9877 47.9694C60.9998 39.2347 50.9559 32.59 38.8632 32.59C27.5872 32.59 18.0929 38.3681 15.2501 46.2303C15.1635 46.4699 14.8798 46.6385 14.5523 46.6492C6.4062 46.914 -0.0807194 52.0323 0.000735889 58.2858C0.0833044 64.6325 7.03001 69.7011 15.4047 69.7011H72.1424C80.6179 69.7011 87.4748 64.4491 87.3562 58.005C87.2423 51.819 80.6077 46.7609 72.4467 46.6399Z"
-                                        fill="#E2E2E2" />
-                                    <path
-                                        d="M87.3536 57.8798C87.4779 61.7158 85.1291 65.1414 81.4304 67.3042C81.8681 66.2293 82.103 65.0885 82.103 63.9049C82.103 57.5351 75.2906 52.3732 66.8876 52.3732C63.9477 52.3732 61.2031 53.005 58.8771 54.0991C58.4218 54.3133 57.8239 54.1039 57.7328 53.7037C55.7449 44.969 45.7003 38.3252 33.6078 38.3252C26.9387 38.3252 20.8919 40.3466 16.477 43.627C20.282 37.1255 28.8741 32.59 38.8632 32.59C50.9559 32.59 60.9992 39.2353 62.9883 47.9692C63.0807 48.3751 63.6852 48.5738 64.1472 48.3571C66.5491 47.2301 69.3962 46.5958 72.4428 46.6402C80.5422 46.7583 87.1549 51.7419 87.3536 57.8798Z"
-                                        fill="#CCCCCC" />
-                                    <path
-                                        d="M11.8294 61.6254C12.7091 61.6254 13.4223 61.0849 13.4223 60.4181C13.4223 59.7513 12.7091 59.2108 11.8294 59.2108C10.9496 59.2108 10.2365 59.7513 10.2365 60.4181C10.2365 61.0849 10.9496 61.6254 11.8294 61.6254Z"
-                                        fill="#CCCCCC" />
-                                    <path
-                                        d="M16.9996 65.1354C17.8794 65.1354 18.5926 64.5949 18.5926 63.9281C18.5926 63.2614 17.8794 62.7208 16.9996 62.7208C16.1199 62.7208 15.4067 63.2614 15.4067 63.9281C15.4067 64.5949 16.1199 65.1354 16.9996 65.1354Z"
-                                        fill="#CCCCCC" />
-                                    <path
-                                        d="M35.2983 42.9911C36.1781 42.9911 36.8912 42.4506 36.8912 41.7838C36.8912 41.1171 36.1781 40.5766 35.2983 40.5766C34.4186 40.5766 33.7054 41.1171 33.7054 41.7838C33.7054 42.4506 34.4186 42.9911 35.2983 42.9911Z"
-                                        fill="#CCCCCC" />
+                <div class="w-full max-w-lg mx-auto  flex flex-col justify-between items-center">
+                    <svg fill="#000000" height="40px" width="40px" version="1.1" id="Capa_1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        viewBox="0 0 611.999 611.999" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <g>
+                                    <g>
+                                        <path
+                                            d="M570.107,500.254c-65.037-29.371-67.511-155.441-67.559-158.622v-84.578c0-81.402-49.742-151.399-120.427-181.203 C381.969,34,347.883,0,306.001,0c-41.883,0-75.968,34.002-76.121,75.849c-70.682,29.804-120.425,99.801-120.425,181.203v84.578 c-0.046,3.181-2.522,129.251-67.561,158.622c-7.409,3.347-11.481,11.412-9.768,19.36c1.711,7.949,8.74,13.626,16.871,13.626 h164.88c3.38,18.594,12.172,35.892,25.619,49.903c17.86,18.608,41.479,28.856,66.502,28.856 c25.025,0,48.644-10.248,66.502-28.856c13.449-14.012,22.241-31.311,25.619-49.903h164.88c8.131,0,15.159-5.676,16.872-13.626 C581.586,511.664,577.516,503.6,570.107,500.254z M484.434,439.859c6.837,20.728,16.518,41.544,30.246,58.866H97.32 c13.726-17.32,23.407-38.135,30.244-58.866H484.434z M306.001,34.515c18.945,0,34.963,12.73,39.975,30.082 c-12.912-2.678-26.282-4.09-39.975-4.09s-27.063,1.411-39.975,4.09C271.039,47.246,287.057,34.515,306.001,34.515z M143.97,341.736v-84.685c0-89.343,72.686-162.029,162.031-162.029s162.031,72.686,162.031,162.029v84.826 c0.023,2.596,0.427,29.879,7.303,63.465H136.663C143.543,371.724,143.949,344.393,143.97,341.736z M306.001,577.485 c-26.341,0-49.33-18.992-56.709-44.246h113.416C355.329,558.493,332.344,577.485,306.001,577.485z">
+                                        </path>
+                                        <path
+                                            d="M306.001,119.235c-74.25,0-134.657,60.405-134.657,134.654c0,9.531,7.727,17.258,17.258,17.258 c9.531,0,17.258-7.727,17.258-17.258c0-55.217,44.923-100.139,100.142-100.139c9.531,0,17.258-7.727,17.258-17.258 C323.259,126.96,315.532,119.235,306.001,119.235z">
+                                        </path>
+                                    </g>
                                 </g>
-                                <defs>
-                                    <clipPath id="clip0">
-                                        <rect width="95" height="72" fill="white" />
-                                    </clipPath>
-                                </defs>
-                            </svg>
-                        </div>
-                        <p id="weather-main" class="text-gray-700 mb-2">Partly cloudy</p>
-                        <div id="weather-temp" class="text-3xl font-bold text-gray-900 mb-6">32º<span
-                                class="font-normal text-gray-700 mx-1">/</span>20º</div>
-                    </div>
-                    <div id="chartContainer" class="hidden bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        <canvas id="myChart"></canvas>
+                            </g>
+                        </g>
+                    </svg>
+                    <div class="mt-5">
+                        <h2 class="text-xl font-semibold mb-2">Update Alerts ( Please Check console to see the alerts )
+                        </h2>
+                        <input id="temperatureThreshold" type="number" class="border p-2 w-full rounded-md"
+                            placeholder="Temperature Threshold">
+                        <input id="conditionThreshold" type="text" class="border p-2 w-full rounded-md mt-2"
+                            placeholder="Condition Threshold">
+                        <button onclick="updateAlert()"
+                            class="mt-2 p-2 bg-yellow-500 text-white w-full rounded-md">Update
+                            Alert</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="w-full max-w-lg mx-auto mt-4">
-                <h2 class="text-xl font-semibold mb-2">Update Alerts ( Please Check console to see the alerts ) </h2>
-                <input id="temperatureThreshold" type="number" class="border p-2 w-full rounded-md"
-                    placeholder="Temperature Threshold">
-                <input id="conditionThreshold" type="text" class="border p-2 w-full rounded-md mt-2"
-                    placeholder="Condition Threshold">
-                <button onclick="updateAlert()" class="mt-2 p-2 bg-yellow-500 text-white w-full rounded-md">Update
-                    Alert</button>
             </div>
             <div class="max-w-4xl mx-auto mt-4">
                 <canvas id="weatherChart"></canvas>
@@ -178,188 +228,7 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById("weatherMonitoring").style.display = "none"
-        document.getElementById("ruleEngine").style.display = "none"
-        function loadComponent(component) {
-            console.log(component);
-            const parentDiv = document.getElementById('componentContainer');
-            const childDiv = document.getElementById(component);
-            parentDiv.appendChild(childDiv);
-            if (component === "weatherMonitoring") {
-                document.getElementById("weatherMonitoring").style.display = "block"
-                document.getElementById("ruleEngine").style.display = "none"
-            } else {
-                document.getElementById("weatherMonitoring").style.display = "none"
-                document.getElementById("ruleEngine").style.display = "block"
-            }
-            updateTabStyles(component)
-        }
-
-        function updateTabStyles(selectedComponent) {
-            const tab1 = document.getElementById("weatherMonitoring-tab")
-            const tab2 = document.getElementById("ruleEngine-tab")
-            if (selectedComponent == "weatherMonitoring") {
-                tab1.classList.add('text-blue-500', 'font-semibold');
-                tab1.classList.remove('text-gray-500');
-                tab2.classList.remove('text-blue-500', 'font-semibold');
-                tab2.classList.add('text-gray-500');
-            } else {
-                tab2.classList.add('text-blue-500', 'font-semibold');
-                tab2.classList.remove('text-gray-500');
-                tab1.classList.remove('text-blue-500', 'font-semibold');
-                tab1.classList.add('text-gray-500');
-            }
-
-        }
-        async function createRule() {
-            const ruleString = document.getElementById('ruleInput').value;
-            const response = await fetch('/api/rules/create_rule', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ruleString })
-            });
-            const result = await response.json();
-            document.getElementById('astOutput').innerHTML = `<pre style="height: 280px; overflow: scroll;">${JSON.stringify(result, null, 2)}</pre>`;
-
-        }
-
-        async function combineRules() {
-            const ruleStrings = [document.getElementById('ruleInput').value];
-            const response = await fetch('/api/rules/combine_rules', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ruleStrings })
-            });
-            const result = await response.json();
-            document.getElementById('astOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-        }
-
-        async function evaluateRule() {
-            try {
-                const dataInput = document.getElementById('dataInput').value;
-                const astResponse = await fetch('/api/rules/latest_ast');
-                if (!astResponse.ok) {
-                    throw new Error('Failed to fetch latest AST');
-                }
-                const astOutput = await astResponse.json().ast;
-                console.log(astOutput);
-                // const astOutput = document.getElementById('astOutput').innerText;
-
-                // Validate and parse JSON data
-                let data;
-                let ast;
-                try {
-                    data = JSON.parse(dataInput);
-                } catch (e) {
-                    throw new Error('Invalid data JSON');
-                }
-
-                // try {
-                //     ast = JSON.parse(astOutput);
-                // } catch (e) {
-                //     throw new Error('Invalid AST JSON');
-                // }
-
-                // Call the API
-                const response = await fetch('/api/rules/evaluate_rule', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ast, data })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`API response error: ${errorText}`);
-                }
-
-                // Handle successful response
-                const result = await response.json();
-                document.getElementById('evaluationOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('evaluationOutput').innerHTML = `<pre>${error.message}</pre>`;
-            }
-        }
-
-
-
-
-
-        async function fetchWeatherSummary() {
-            const response = await fetch('/api/weather/weather_summary');
-            const result = await response.json();
-            document.getElementById('weatherSummaryOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-        }
-        async function updateAlert() {
-            const temperatureThreshold = document.getElementById('temperatureThreshold').value;
-            const conditionThreshold = document.getElementById('conditionThreshold').value;
-            const response = await fetch('/api/weather/update_alert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ temperatureThreshold, conditionThreshold })
-            });
-            const result = await response.json();
-            document.getElementById('alertsOutput').innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-        }
-
-
-        async function loadChart() {
-            const infoMessageDiv = document.getElementById('info-message');
-            infoMessageDiv.style.display = 'none';
-            const response = await fetch('/api/weather/weather_summary');
-            const result = await response.json();
-            const weatherData = result.hourlyData;
-            console.log(result);
-            const today = new Date().toISOString().split('T')[0];
-
-            if (result.date == today) {
-                infoMessageDiv.style.display = 'flex';
-            }
-            document.getElementById('weather-main').innerText = weatherData[0].main;
-            document.getElementById('weather-temp').innerHTML = `${weatherData[0].temp.toFixed(1)}º<span class="font-normal text-gray-700 mx-1">/</span>${weatherData[0].feels_like.toFixed(1)}º`;
-
-            const date = new Date(result.date);
-            document.getElementById('weather-date').innerText = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-            const labels = weatherData.map(entry => new Date(entry.dt * 1000)); // Convert timestamp to Date object
-            const temperatures = weatherData.map(entry => entry.temp);
-
-            const ctx = document.getElementById('weatherChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Temperature',
-                        data: temperatures,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'time',
-
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function (value) {
-                                    return value + '°C';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Load the default component
-        loadComponent('ruleEngine');
-        loadChart()
-    </script>
+    <script src="./script.js"></script>
 </body>
 
 </html>

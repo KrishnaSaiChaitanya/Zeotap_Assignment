@@ -1,5 +1,5 @@
 class Node {
-  constructor(type, left = null, right = null, value = null) {
+  constructor(type, left = null, right = null, value) {
     this.type = type;
     this.left = left;
     this.right = right;
@@ -7,4 +7,4 @@ class Node {
   }
 }
 
-module.exports = Node;
+module.exports = { Node };
